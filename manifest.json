@@ -1,0 +1,16 @@
+{
+	"manifest_version": 2,
+	"name": "Currency Calculator",
+	"version": "1.0",
+
+	"description": "Calculate currency",
+
+	"icons": {
+		"48": "favicon.ico"
+	},
+	"browser_action": {
+		"default_icon": "favicon.ico",
+		"default_title": "Currency Calculator",
+		"default_popup": "index.html"
+	}
+}

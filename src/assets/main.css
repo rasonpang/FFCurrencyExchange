@@ -1,0 +1,56 @@
+body {
+	background-color: #181818;
+	color: white;
+}
+
+/* Multi select */
+.multi-select {
+	width: 5em !important;
+}
+.multi-select .multiselect__content-wrapper {
+	width: 50vw;
+}
+.multi-select .multiselect__tags {
+	/* Originally: 5px */
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+/* Currency */
+.currency-input {
+	display: flex;
+	width: 300px;
+}
+.currency-value {
+	width: 100%;
+	border: 0;
+	padding: 0 1em;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+.currency-value:focus {
+	outline: none;
+}
+
+/* Container */
+.input-container {
+	display: flex;
+	gap: 1em;
+	width: fit-content;
+}
+
+.input-container > span {
+	display: flex;
+	align-items: center;
+}
+.switch-button {
+	--size: 1.25em;
+	width: var(--size);
+	height: var(--size);
+	padding: calc(var(--size) / 2);
+	border-radius: 50%;
+	cursor: pointer;
+}
+.switch-button:hover {
+	background-color: rgba(255, 255, 255, 0.2);
+}
