@@ -1,33 +1,35 @@
 <template>
-	<div class="app-container">
+	<div>
 		<div class="input-container">
-			<span>
+			<div>
 				<CurrencySelect
 					:value="source"
 					@onFocus="setFocusField('source')"
 				/>
-			</span>
+			</div>
 
-			<span>
+			<div style="text-align: center; margin: 1em 0">
 				<img
 					class="switch-button"
 					src="./assets/switch.svg"
 					alt="Switch"
 					@click="switchCurrency"
 				/>
-			</span>
+			</div>
 
-			<span>
+			<div>
 				<CurrencySelect
 					:value="target"
 					@onFocus="setFocusField('target')"
 				/>
-			</span>
-		</div>
+			</div>
 
-		<div>
-			({{ source.currency }}) TO ({{ target.currency }}) =
-			{{ currencyRate[target.currency] ?? 1 }}
+			<div style="text-align: center; margin-top: 1em">
+				({{ source.currency }}) TO ({{
+					target.currency
+				}}) =
+				{{ currencyRate[target.currency] ?? 1 }}
+			</div>
 		</div>
 	</div>
 </template>
