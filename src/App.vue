@@ -111,11 +111,10 @@ watch(() => target.value.value, onValueChange);
 watch(() => source.value.value, onValueChange);
 
 onMounted(async () => {
-	// Load if have cookie
-	const cookie = document.cookie;
+	const data = localStorage.getItem("inputs");
 
-	if (cookie !== "") {
-		const parsedCookie = JSON.parse(cookie);
+	if (data) {
+		const parsedCookie = JSON.parse(data);
 
 		const newSource = clone(parsedCookie.source);
 		const newTarget = clone(parsedCookie.target);
@@ -127,17 +126,20 @@ onMounted(async () => {
 	}
 
 	// Make sure to save before closing
-	window.onbeforeunload = () => {
-		document.cookie = JSON.stringify({
-			source: {
-				currency: source.value.currency,
-				value: source.value.value,
-			},
-			target: {
-				currency: target.value.currency,
-				value: target.value.value,
-			},
-		});
+	window.onunload = () => {
+		localStorage.setItem(
+			"inputs",
+			JSON.stringify({
+				source: {
+					currency: source.value.currency,
+					value: source.value.value,
+				},
+				target: {
+					currency: target.value.currency,
+					value: target.value.value,
+				},
+			})
+		);
 	};
 });
 </script>
