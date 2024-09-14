@@ -65,6 +65,9 @@ const switchCurrency = async () => {
 	target.value = from;
 
 	await refreshData();
+
+	// Make value accurate
+	source.value.value = to.value;
 };
 const refreshData = async () => {
 	focusedInput.value = "source";
@@ -84,13 +87,28 @@ const onValueChange = () => {
 		to.value.value = from.value.value;
 	} else {
 		if (focusingField == "source") {
-			target.value.value =
-				source.value.value *
-				currencyRate.value[target.value.currency];
+			const result =
+				Math.round(
+					(source.value.value *
+						currencyRate.value[
+							target.value.currency
+						] +
+						Number.EPSILON) *
+						100
+				) / 100;
+			target.value.value = result;
 		} else if (focusingField == "target") {
-			source.value.value =
-				target.value.value /
-				currencyRate.value[target.value.currency];
+			const result =
+				Math.round(
+					(target.value.value /
+						currencyRate.value[
+							target.value.currency
+						] +
+						Number.EPSILON) *
+						100
+				) / 100;
+
+			source.value.value = result;
 		}
 	}
 };
