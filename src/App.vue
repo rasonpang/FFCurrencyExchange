@@ -34,9 +34,10 @@
 	</div>
 </template>
 <script setup>
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import CurrencySelect from "./components/CurrencySelect.vue";
 import axios from "axios";
+import { values } from "lodash";
 
 const focusedInput = ref("source");
 const source = ref({
@@ -63,6 +64,9 @@ const switchCurrency = async () => {
 	source.value = to;
 	target.value = from;
 
+	await refreshData();
+};
+const refreshData = async () => {
 	focusedInput.value = "source";
 	await getCurrencyRate();
 
@@ -105,4 +109,35 @@ watch(() => source.value.currency, getCurrencyRate);
 
 watch(() => target.value.value, onValueChange);
 watch(() => source.value.value, onValueChange);
+
+onMounted(async () => {
+	// Load if have cookie
+	const cookie = document.cookie;
+
+	if (cookie !== "") {
+		const parsedCookie = JSON.parse(cookie);
+
+		const newSource = clone(parsedCookie.source);
+		const newTarget = clone(parsedCookie.target);
+
+		source.value = newSource;
+		target.value = newTarget;
+
+		await refreshData();
+	}
+
+	// Make sure to save before closing
+	window.onbeforeunload = () => {
+		document.cookie = JSON.stringify({
+			source: {
+				currency: source.value.currency,
+				value: source.value.value,
+			},
+			target: {
+				currency: target.value.currency,
+				value: target.value.value,
+			},
+		});
+	};
+});
 </script>
