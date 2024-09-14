@@ -11,7 +11,11 @@
 				{{ props.option }}
 			</template>
 		</Multiselect>
-		<input class="currency-value" v-model="value.value" />
+		<input
+			class="currency-value"
+			v-model="value.value"
+			@focus="onFocus"
+		/>
 	</span>
 </template>
 <script setup>
@@ -20,7 +24,7 @@ import { onMounted, ref, watch } from "vue";
 import Multiselect from "vue-multiselect";
 
 const props = defineProps(["value"]);
-const emit = defineEmits(["onValueChange"]);
+const emit = defineEmits(["onFocus"]);
 
 const options = ref([]);
 
@@ -48,11 +52,9 @@ const getCurrencies = async () => {
 	}
 };
 
-const onValueChange = () => {
-	emit("onValueChange");
+const onFocus = () => {
+	emit("onFocus");
 };
-
-watch(() => props.value.value, onValueChange);
 
 onMounted(async () => {
 	await getCurrencies();

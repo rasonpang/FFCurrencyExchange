@@ -1,10 +1,10 @@
 <template>
-	<div>
-		<span class="input-container">
+	<div class="app-container">
+		<div class="input-container">
 			<span>
 				<CurrencySelect
 					:value="source"
-					@onValueChange="onValueChange('source')"
+					@onFocus="setFocusField('source')"
 				/>
 			</span>
 
@@ -20,10 +20,15 @@
 			<span>
 				<CurrencySelect
 					:value="target"
-					@onValueChange="onValueChange('target')"
+					@onFocus="setFocusField('target')"
 				/>
 			</span>
-		</span>
+		</div>
+
+		<div>
+			({{ source.currency }}) TO ({{ target.currency }}) =
+			{{ currencyRate[target.currency] ?? 1 }}
+		</div>
 	</div>
 </template>
 <script setup>
@@ -31,11 +36,11 @@ import { ref, watch } from "vue";
 import CurrencySelect from "./components/CurrencySelect.vue";
 import axios from "axios";
 
+const focusedInput = ref("source");
 const source = ref({
 	currency: "USD",
 	value: 0,
 });
-
 const target = ref({
 	currency: "USD",
 	value: 0,
@@ -43,47 +48,45 @@ const target = ref({
 
 const currencyRate = ref({});
 
-let isWaiting = false;
-
-const throttle = (func, wait = 250) => {
-	return (...args) => {
-		if (!isWaiting) {
-			func.apply(this, args);
-			isWaiting = true;
-			setTimeout(() => {
-				isWaiting = false;
-			}, wait);
-		}
-	};
+const clone = (value) => {
+	const parsedValue = JSON.parse(JSON.stringify(value));
+	parsedValue.value = Number(parsedValue.value);
+	return parsedValue;
 };
 
-const clone = (value) => JSON.parse(JSON.stringify(value));
-
-const switchCurrency = () => {
+const switchCurrency = async () => {
 	const from = clone(source.value);
 	const to = clone(target.value);
 
 	source.value = to;
 	target.value = from;
 
-	onValueChange("source");
+	focusedInput.value = "source";
+	await getCurrencyRate();
+
+	onValueChange();
 };
 
-const onValueChange = (key) => {
-	const c = throttle(() => {
-		const ground = key == "source" ? source : target;
-		const opposite = key == "source" ? target : source;
+const setFocusField = (key) => {
+	focusedInput.value = key;
+};
 
-		if (ground.value.currency == opposite.value.currency) {
-			opposite.value.value = ground.value.value;
-		} else {
-			const result =
-				ground.value.value *
-				currencyRate.value[opposite.value.currency];
-			opposite.value.value = result;
+const onValueChange = () => {
+	const focusingField = focusedInput.value;
+	// If currency is same
+	if (source.value.currency == target.value.currency) {
+		to.value.value = from.value.value;
+	} else {
+		if (focusingField == "source") {
+			target.value.value =
+				source.value.value *
+				currencyRate.value[target.value.currency];
+		} else if (focusingField == "target") {
+			source.value.value =
+				target.value.value /
+				currencyRate.value[target.value.currency];
 		}
-	});
-	c();
+	}
 };
 
 const getCurrencyRate = async () => {
@@ -98,5 +101,6 @@ const getCurrencyRate = async () => {
 
 watch(() => source.value.currency, getCurrencyRate);
 
-// https://www.frankfurter.app/docs/#historical
+watch(() => target.value.value, onValueChange);
+watch(() => source.value.value, onValueChange);
 </script>
