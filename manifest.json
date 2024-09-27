@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Currency Calculator",
-	"version": "1.0",
+	"version": "1.0.1",
 
 	"description": "Calculate currency",
 
@@ -12,5 +12,6 @@
 		"default_icon": "money.png",
 		"default_title": "Currency Calculator",
 		"default_popup": "index.html"
-	}
+	},
+	"permissions": ["storage"]
 }
